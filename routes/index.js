@@ -1,18 +1,40 @@
 const router = require('express').Router();
 const passport = require('passport');
-const passwordUtils = require('../lib/passwordUtils');
+const genPassword = require('../lib/passwordUtils').genPassword;
 const connection = require('../config/database');
 const User = connection.models.User;
+
 
 /**
  * -------------- POST ROUTES ----------------
  */
 
  // TODO
- router.post('/login', (req, res, next) => {});
+ router.post('/login',passport.authenticate('local', {
+    successRedirect: '/protected-route',
+    failureRedirect: '/login',
+  }),(req,res,next)=>{
+    console.log(req.user);
+  });
 
  // TODO
- router.post('/register', (req, res, next) => {});
+ router.post('/register', (req, res, next) => {
+    const saltHash=genPassword(req.body.password);
+    const salt=saltHash.salt;
+    const hash=saltHash.hash;
+    const newUser= new User({
+        username: req.body.username,
+        hash: hash, 
+        salt:salt
+    });
+
+   newUser.save()
+    .then((user)=>{
+        console.log(user);
+    })
+  
+    res.redirect("/login");
+ });
 
 
  /**
@@ -57,6 +79,7 @@ router.get('/protected-route', (req, res, next) => {
     
     // This is how you check if a user is authenticated and protect a route.  You could turn this into a custom middleware to make it less redundant
     if (req.isAuthenticated()) {
+        // if(req.session.passport.user property exist then user will be authenticated otherwise not)
         res.send('<h1>You are authenticated</h1><p><a href="/logout">Logout and reload</a></p>');
     } else {
         res.send('<h1>You are not authenticated</h1><p><a href="/login">Login</a></p>');
