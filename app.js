@@ -7,6 +7,7 @@ var routes = require('./routes');
 const port=3000;
 const connection = require('./config/database');
 
+
 // Package documentation - https://www.npmjs.com/package/connect-mongo
 const MongoStore = require('connect-mongo')(session);
 
@@ -58,7 +59,7 @@ app.use(passport.session());
 // app.use((req,res,next)=>{
 //     // console.log(req.session);
 
-//     // console.log(req.user);// to get req.user it first check whether req.user exist on not if it exist then it will take that user_id and deserialize function will grab the user info from user's database
+//     // console.log(req.user);// to get req.user it first check whether req.user exist or not if it exist then it will take that user_id and deserialize function will grab the user info from user's database
 
 //     next();
 // })

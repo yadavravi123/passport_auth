@@ -29,7 +29,7 @@ const verifyCallback=(username,password,done)=>{
     }
     const strategy= new LocalStrategy(customFields,verifyCallback);
 
-    passport.use(strategy); 
+    passport.use(strategy); // for setup
 
 // if the user is verified and it is valid then serializeUser will be called which will put that user_id to req.session.passport.user
 //
@@ -47,10 +47,17 @@ const verifyCallback=(username,password,done)=>{
         console.log(`deserialize`); 
         // let date=new Date();
         // console.log(date);
-        User.findById(id, function (err, user) {
-          if (err) {
-            return done(err);
-          }
-          done(null, user);
-        });
+        // User.findById(id, function (err, user) {
+        //   if (err) {
+        //     return done(err);
+        //   }
+        //   done(null, user);
+        // });
+        User.findById(id)
+        .then((user)=>{
+          return done(null,user);
+        })
+        .catch((err)=>{
+          return done(err);
+        })
       }); 
